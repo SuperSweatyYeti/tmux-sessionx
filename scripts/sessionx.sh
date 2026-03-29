@@ -138,6 +138,7 @@ run_plugin() {
 	eval $(tmux show-option -gqv @sessionx-_built-fzf-opts)
 	handle_input
 	args+=(--bind "$BACK")
+	args+=(--border-label "Current session: \"$CURRENT\" ")
 
 	git_branch_mode=$(tmux show-option -gqv @sessionx-_git-branch)
 	if [[ "$git_branch_mode" == "on" ]]; then
