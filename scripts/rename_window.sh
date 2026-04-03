@@ -15,7 +15,7 @@ fi
 clear >&2
 clear >&2
 cols=$(tput cols 2>/dev/null || echo 80)
-label=" 󰤨 Rename Window "
+label="  Rename Window "
 inner_w=$((cols - 4))
 if [ $inner_w -lt 20 ]; then inner_w=20; fi
 max_input=$((inner_w - 1))
