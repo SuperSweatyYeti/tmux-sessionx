@@ -43,7 +43,6 @@ handle_binds() {
 	bind_window_mode=$(tmux_option_or_fallback "@sessionx-bind-window-mode" "ctrl-w")
 	bind_configuration_mode=$(tmux_option_or_fallback "@sessionx-bind-configuration-path" "ctrl-x")
 	bind_rename_session=$(tmux_option_or_fallback "@sessionx-bind-rename-session" "ctrl-r")
-	bind_rename_window=$(tmux_option_or_fallback "@sessionx-bind-rename-window" "ctrl-R")
 	additional_fzf_options=$(tmux_option_or_fallback "@sessionx-additional-options" "--color pointer:9,spinner:92,marker:46")
 
 	bind_back=$(tmux_option_or_fallback "@sessionx-bind-back" "ctrl-b")
@@ -77,7 +76,7 @@ handle_args() {
 
 	NEW_WINDOW="$bind_new_window:reload(find -L $PWD -mindepth 1 -maxdepth 1 -type d -o -type l)+change-preview($LS_COMMAND {})"
 	ZO_WINDOW="$bind_zo:reload(zoxide query -l)+change-preview($LS_COMMAND {})"
-	KILL_SESSION="$bind_kill_session:execute-silent(tmux kill-session -t {1})+reload(${SCRIPTS_DIR%/}/reload_sessions.sh)"
+	KILL_SESSION="$bind_kill_session:transform(${SCRIPTS_DIR%/}/kill_dispatch.sh {1})"
 
 	ACCEPT="$bind_accept:replace-query+print-query"
 	DELETE="$bind_delete_char:backward-delete-char"
@@ -88,15 +87,12 @@ handle_args() {
 	SCROLL_UP="$bind_scroll_up:preview-half-page-up"
 	SCROLL_DOWN="$bind_scroll_down:preview-half-page-down"
 
-	RENAME_SESSION_EXEC="${SCRIPTS_DIR%/}/rename_session.sh {}"
+	RENAME="$bind_rename_session:transform(${SCRIPTS_DIR%/}/rename_dispatch.sh {1})"
 
-	RENAME_SESSION_RELOAD='bash -c '\'' tmux list-sessions | sed -E "s/:.*$//"; '\'''
-	RENAME_SESSION_LABEL='bash -c '\'' printf "Current session: \"%s\" " "$(tmux display-message -p "#S")" '\'''
-
-	RENAME_SESSION_PREVIEW_LABEL='bash -c '\'' name=$(tmux show-option -gqv @sessionx-_current-name); printf "[ %s ]" "$name" '\'''
-	RENAME_SESSION="$bind_rename_session:execute($RENAME_SESSION_EXEC)+reload($RENAME_SESSION_RELOAD)+transform-border-label($RENAME_SESSION_LABEL)+transform-preview-label($RENAME_SESSION_PREVIEW_LABEL)"
-
-	HEADER="$bind_accept=󰿄  $bind_kill_session=󱂧  $bind_rename_session=󰑕  $bind_configuration_mode=󱃖  $bind_window_mode=   $bind_new_window=󰇘  $bind_back=󰌍  $bind_tree_mode=󰐆   $bind_scroll_up=  $bind_scroll_down= / $bind_zo="
+	HEADER_LINE1="$bind_accept=󰿄  $bind_window_mode=   $bind_tree_mode=󰐆   $bind_back=󰌍  $bind_scroll_up=  $bind_scroll_down= / $bind_zo="
+	HEADER_LINE2="$bind_kill_session=󱂧  $bind_rename_session=󰑕  $bind_configuration_mode=󱃖  $bind_new_window=󰇘"
+	HEADER="$HEADER_LINE1"$'
+'"$HEADER_LINE2"
 	if is_fzf-marks_enabled; then
 		HEADER="$HEADER  $(get_fzf-marks_keybind)=󰣉"
 	fi
@@ -122,7 +118,7 @@ handle_args() {
 		--bind "$ACCEPT"
 		--bind "$SCROLL_UP"
 		--bind "$SCROLL_DOWN"
-		--bind "$RENAME_SESSION"
+		--bind "$RENAME"
 		--bind '?:toggle-preview'
 		--bind 'change:first'
 		--exit-0
