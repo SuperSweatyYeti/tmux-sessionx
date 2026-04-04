@@ -6,7 +6,7 @@ CURRENT_SESSION=$(tmux display-message -p '#S')
 SESSIONS=$(tmux list-sessions | sed -E 's/:.*$//')
 
 if [[ $(echo "$SESSIONS" | wc -l) -gt 1 ]]; then
-	SESSIONS=$(echo "$SESSIONS" | grep -v "$CURRENT_SESSION")
+	SESSIONS=$(echo "$SESSIONS" | grep -Fxv "$CURRENT_SESSION")
 else
 	true
 fi

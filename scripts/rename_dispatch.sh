@@ -6,9 +6,9 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 target="$1"
 
 if [[ "$target" =~ ^[^:]+:[0-9]+$ ]]; then
-	printf 'execute(%s/rename_window.sh %s)+reload(tmux list-windows -a -F '\''#{session_name}:#{window_index} #{window_name}'\'')' \
+	printf 'execute(%s/rename_window.sh "%s")+reload(tmux list-windows -a -F '\''#{session_name}:#{window_index} #{window_name}'\'')' \
 		"$SCRIPTS_DIR" "$target"
 else
-	printf 'execute(%s/rename_session.sh %s)+reload(%s/reload_sessions.sh)' \
+	printf 'execute(%s/rename_session.sh "%s")+reload(%s/reload_sessions.sh)+transform-border-label(printf '\''Current session: "%%s" '\'' "$(tmux display-message -p '"'"'#S'"'"')")' \
 		"$SCRIPTS_DIR" "$target" "$SCRIPTS_DIR"
 fi

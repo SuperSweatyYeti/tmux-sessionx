@@ -6,6 +6,8 @@ if [ -z "$1" ]; then
 fi
 
 current="$1"
+old_settings=$(stty -g </dev/tty)
+trap 'stty "$old_settings" </dev/tty' EXIT
 clear >&2
 clear >&2
 cols=$(tput cols 2>/dev/null || echo 80)
@@ -85,7 +87,7 @@ do_end() {
 }
 printf >&2 "\033[2A"
 redraw_input
-old_settings=$(stty -g </dev/tty)
+sleep 0.01 # brief delay to let fzf fully hand off terminal control before stty
 stty -echo -icanon min 1 time 0 </dev/tty
 while true; do
   char=$(dd bs=1 count=1 2>/dev/null </dev/tty)
