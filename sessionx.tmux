@@ -89,7 +89,7 @@ handle_args() {
 
 	RENAME="$bind_rename_session:transform(${SCRIPTS_DIR%/}/rename_dispatch.sh {1})"
 
-	HEADER_LINE1="$bind_accept=󰿄  $bind_window_mode=   $bind_tree_mode=󰐆   $bind_back=󰌍  $bind_scroll_up=  $bind_scroll_down= / $bind_zo="
+	HEADER_LINE1="$bind_accept=󰿄  $bind_window_mode=   $bind_tree_mode=󰐆   $bind_back=󰣀  $bind_scroll_up=  $bind_scroll_down= / $bind_zo="
 	HEADER_LINE2="$bind_kill_session=󱂧  $bind_rename_session=󰑕  $bind_configuration_mode=󱃖  $bind_new_window=󰇘"
 	HEADER="$HEADER_LINE1"$'
 '"$HEADER_LINE2"
