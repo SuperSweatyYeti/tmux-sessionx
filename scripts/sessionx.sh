@@ -128,7 +128,7 @@ handle_input() {
 	if [[ "$git_branch_mode" == "on" ]]; then
 		BACK="$bind_back:reload(${CURRENT_DIR}/sessions_with_branches.sh)+change-preview(${CURRENT_DIR}/preview.sh {1})"
 	else
-		BACK="$bind_back:reload(echo -e \"${INPUT// /}\")+change-preview(${CURRENT_DIR}/preview.sh {1})"
+		BACK="$bind_back:reload(${CURRENT_DIR}/reload_after_rename.sh session)+change-preview(${CURRENT_DIR}/preview.sh {1})"
 	fi
 }
 
